@@ -1,0 +1,31 @@
+{
+    "name": "Trangfoo/hprose-lumen",
+    "description": "Hprose for Lumen/Laravel",
+    "keywords": ["hprose", "lumen"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Frank.Luo",
+            "email": "manqiang.luo@gamil.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "hprose/hprose": "v2.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Trangfoo\\HproseLumen\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Trangfoo\\HproseLumen\\ServiceProvider"
+            ],
+            "aliases": {
+                "LaravelHproseRouter": "Trangfoo\\HproseLumen\\Facades\\Router"
+            }
+        }
+    }
+}
