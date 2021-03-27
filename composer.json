@@ -1,6 +1,6 @@
 {
     "name": "trangfoo/hprose-lumen",
-    "description": "Hprose for Lumen/Laravel",
+    "description": "Hprose for Lumen",
     "keywords": ["hprose", "lumen"],
     "license": "MIT",
     "authors": [
