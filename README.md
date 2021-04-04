@@ -21,7 +21,10 @@ composer require trangfoo/hprose-lumen
 ```
 
 ## 使用**lumen**配置
-1. 在 bootstrap/app.php 注册 ServiceProvider 和 Facade
+1. 在 bootstrap/app.php 中引入hprose配置、注册 ServiceProvider 和 Facade
+   ```php
+        $app->configure('hprose');
+   ```
     ```php
        $app->register(Trangfoo\HproseLumen\ServiceProvider::class);
     ```
@@ -38,17 +41,58 @@ composer require trangfoo/hprose-lumen
         \Laravelista\LumenVendorPublish\VendorPublishCommand::class,
         ];
     ```
+
 3. 配置.env文件
+   
+   完整配置
+   ```
+   #[RPC]
+   #RPC服务（监听端口、主机）
+   HPROSE_PORT=88
+   HPROSE_URIS=["tcp://0.0.0.0:${HPROSE_PORT}"]
+   
+   #开启范例路由
+   HPROSE_DEMO=true
+   
+   #请求不通过返回码及信息
+   HPROSE_REJECT_CODE=0
+   HPROSE_REJECT_MSG=Server拒绝本次请求
+   
+   #RPC连接密钥
+   HPROSE_SECRET=123456789
+   
+   #RPC超时限制（秒）
+   HPROSE_TIMEOUT=60
+   ```
+
    监听地址列表，字符串json格式数组
     ```
-    HPROSE_URIS=["tcp://0.0.0.0:8888"]
+    #RPC服务（监听端口、主机）
+    HPROSE_PORT=88
+    HPROSE_URIS=["tcp://0.0.0.0:${HPROSE_PORT}"]
     ```
 
    是否启用demo方法，true开启 false关闭，开启后将自动对外发布一个远程调用方法 `demo`
    客户端可调用：$client->demo()
     ```
-    HPROSE_DEMO=true // true or false
+    #开启范例路由
+    HPROSE_DEMO=true
     ```
+
+   客户端与服务端通信时，如果发生鉴权失败、超时等返回失败信息；
+   RPC通信的鉴权密钥、超时时间限制
+   ```
+   #请求不通过返回码及信息
+   HPROSE_REJECT_CODE=0
+   HPROSE_REJECT_MSG=Server拒绝本次请求
+
+   #RPC连接密钥
+   HPROSE_SECRET=123456789
+
+   #RPC超时限制（秒）
+   HPROSE_TIMEOUT=60
+   ```
+
 
 4. 创建`配置`和`路由`文件：
     ```shell
@@ -109,9 +153,11 @@ class User
 }
 ```
 
-客户端调用 客户端可以只安装 Hprose
+客户端调用、加入鉴权Handler
 ```php
+
 $client = new \Hprose\Socket\Client('tcp://127.0.0.1:8888', false);
+$client->addInvokeHandler(array(new Trangfoo\HproseLumen\Handler\AuthFilter(), 'inputInvokeHandler'));  //添加鉴权InvokeHandler
 $client->getUserByName('lumen');
 $client->userUpdate('lumen');
 ```
@@ -169,14 +215,6 @@ try{
 }
 
 ```
-
-通过过滤器（Filter）实现验证中间件--待完成
-```php
-
-```
-
-
-
 
 ### 启动服务
 

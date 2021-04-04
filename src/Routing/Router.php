@@ -2,6 +2,8 @@
 
 namespace Trangfoo\HproseLumen\Routing;
 
+use Trangfoo\HproseLumen\Handler\AuthFilter;
+
 class Router
 {
     protected $groupStack = [];
@@ -183,8 +185,9 @@ class Router
     private function addFunction(callable $action, string $alias, array $options)
     {
         $this->methods[] = $alias;
-
         app('hprose.socket_server')->addFunction($action, $alias, $options);
+//        app('hprose.socket_server')->debug = true;
+        app('hprose.socket_server')->addInvokeHandler(array(new AuthFilter(), 'inputInvokeHandler'));
     }
 
     /**
@@ -200,12 +203,8 @@ class Router
     private function addMethod(string $method, $class, string $alias, array $options)
     {
         $this->methods[] = $alias;
-
-        app('hprose.socket_server')->addMethod(
-            $method,
-            $class,
-            $alias,
-            $options
-        );
+        app('hprose.socket_server')->addMethod($method,$class,$alias,$options);
+//        app('hprose.socket_server')->debug = true;
+        app('hprose.socket_server')->addInvokeHandler(array(new AuthFilter(), 'outputInvokeHandler'));
     }
 }
