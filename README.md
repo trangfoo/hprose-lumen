@@ -48,7 +48,7 @@ composer require trangfoo/hprose-lumen
    ```
    #[RPC]
    #RPC服务（监听端口、主机）
-   HPROSE_PORT=88
+   HPROSE_PORT=8888
    HPROSE_URIS=["tcp://0.0.0.0:${HPROSE_PORT}"]
    
    #开启范例路由
@@ -68,7 +68,7 @@ composer require trangfoo/hprose-lumen
    监听地址列表，字符串json格式数组
     ```
     #RPC服务（监听端口、主机）
-    HPROSE_PORT=88
+    HPROSE_PORT=8888
     HPROSE_URIS=["tcp://0.0.0.0:${HPROSE_PORT}"]
     ```
 
