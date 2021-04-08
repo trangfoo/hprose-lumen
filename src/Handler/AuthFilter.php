@@ -1,6 +1,8 @@
 <?php
 namespace Trangfoo\HproseLumen\Handler;
 
+use Hprose\Future;
+
 /**
  * 验证过滤器
  *
@@ -13,7 +15,7 @@ class AuthFilter{
      * 生成签名
      * @return array
      */
-    private static function createSign(){
+    private function createSign(){
         $_st = time();
         $_rpc_id = mt_rand(10000,100000);
         $_sign = md5($_st.$_rpc_id.config('hprose.auth.secret'));
@@ -25,10 +27,10 @@ class AuthFilter{
     }
 
     /**
-     *
+     * 验证签名
      * @param $data
      */
-    private static function checkSign($data){
+    private function checkSign($data){
         $check = false;
         if(isset($data['_st']) && isset($data['_rpc_id']) && isset($data['_sign'])){
             $_st = $data['_st'];
@@ -40,6 +42,8 @@ class AuthFilter{
                     $check = true;
                 }
             }
+        }else{
+            $check = true;
         }
         return $check;
     }
@@ -53,13 +57,12 @@ class AuthFilter{
      * @param \Closure $next
      * @return mixed
      */
-    public static function inputInvokeHandler($name, array &$args, \stdClass $context, \Closure $next) {
+    public function inputInvokeHandler($name, array &$args, \stdClass $context, \Closure $next) {
         //植入验证参数
-        $args[] = self::createSign();
+        $args[] = $this->createSign();
         $response = $next($name, $args, $context);
         return $response;
     }
-
 
     /**
      * 服务端验证后返回信息
@@ -70,8 +73,13 @@ class AuthFilter{
      * @param \Closure $next
      * @return array|mixed
      */
-    public static function outputInvokeHandler($name, array &$args, \stdClass $context, \Closure $next) {
-        if(self::checkSign(end($args))){
+    public function outputInvokeHandler($name, array &$args, \stdClass $context, \Closure $next) {
+        if($this->checkSign(end($args))){
+            $tmp = end($args);
+            if(isset($tmp['_st']) && isset($tmp['_rpc_id']) && isset($tmp['_sign'])){
+                //移去验签信息，以防干扰数据
+                array_pop($args);
+            }
             $response = $next($name, $args, $context);
         }else{
             $response = [
@@ -82,6 +90,4 @@ class AuthFilter{
         }
         return $response;
     }
-
-
 }

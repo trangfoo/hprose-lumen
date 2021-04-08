@@ -186,7 +186,6 @@ class Router
     {
         $this->methods[] = $alias;
         app('hprose.socket_server')->addFunction($action, $alias, $options);
-//        app('hprose.socket_server')->debug = true;
         app('hprose.socket_server')->addInvokeHandler(array(new AuthFilter(), 'inputInvokeHandler'));
     }
 
@@ -204,7 +203,6 @@ class Router
     {
         $this->methods[] = $alias;
         app('hprose.socket_server')->addMethod($method,$class,$alias,$options);
-//        app('hprose.socket_server')->debug = true;
         app('hprose.socket_server')->addInvokeHandler(array(new AuthFilter(), 'outputInvokeHandler'));
     }
 }
