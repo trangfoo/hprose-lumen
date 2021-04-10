@@ -9,7 +9,7 @@ use Hprose\Future;
  * Class AuthFilter
  * @package Trangfoo\HproseLumen\Handler
  */
-class AuthFilter{
+class AuthHandler{
 
     /**
      * 生成签名

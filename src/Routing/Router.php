@@ -2,7 +2,7 @@
 
 namespace Trangfoo\HproseLumen\Routing;
 
-use Trangfoo\HproseLumen\Handler\AuthFilter;
+use Trangfoo\HproseLumen\Handler\AuthHandler;
 
 class Router
 {
@@ -186,7 +186,7 @@ class Router
     {
         $this->methods[] = $alias;
         app('hprose.socket_server')->addFunction($action, $alias, $options);
-        app('hprose.socket_server')->addInvokeHandler(array(new AuthFilter(), 'inputInvokeHandler'));
+        app('hprose.socket_server')->addInvokeHandler(array(new AuthHandler(), 'outputInvokeHandler'));
     }
 
     /**
@@ -203,6 +203,6 @@ class Router
     {
         $this->methods[] = $alias;
         app('hprose.socket_server')->addMethod($method,$class,$alias,$options);
-        app('hprose.socket_server')->addInvokeHandler(array(new AuthFilter(), 'outputInvokeHandler'));
+        app('hprose.socket_server')->addInvokeHandler(array(new AuthHandler(), 'outputInvokeHandler'));
     }
 }
