@@ -157,7 +157,7 @@ class User
 ```php
 
 $client = new \Hprose\Socket\Client('tcp://127.0.0.1:8888', false);
-$client->addInvokeHandler(array(new \Trangfoo\HproseLumen\Handler\AuthFilter(), 'inputInvokeHandler'));  //添加鉴权InvokeHandler
+$client->addInvokeHandler(array(new \Trangfoo\HproseLumen\Handler\AuthHandler(), 'inputInvokeHandler'));  //添加鉴权InvokeHandler
 $client->getUserByName('lumen');
 $client->userUpdate('lumen');
 ```
