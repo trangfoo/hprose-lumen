@@ -185,8 +185,7 @@ class Router
     private function addFunction(callable $action, string $alias, array $options)
     {
         $this->methods[] = $alias;
-        app('hprose.socket_server')->addFunction($action, $alias, $options);
-        app('hprose.socket_server')->addInvokeHandler(array(new AuthHandler(), 'outputInvokeHandler'));
+        app('hprose.socket_server')->addFunction($action, $alias, $options)->addInvokeHandler(array(new AuthHandler(), 'outputInvokeHandler'));
     }
 
     /**
@@ -203,6 +202,5 @@ class Router
     {
         $this->methods[] = $alias;
         app('hprose.socket_server')->addMethod($method,$class,$alias,$options);
-        app('hprose.socket_server')->addInvokeHandler(array(new AuthHandler(), 'outputInvokeHandler'));
     }
 }
