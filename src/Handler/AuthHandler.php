@@ -32,18 +32,20 @@ class AuthHandler{
      */
     private function checkSign($data){
         $check = false;
-        if(isset($data['_st']) && isset($data['_rpc_id']) && isset($data['_sign'])){
-            $_st = $data['_st'];
-            $_rpc_id = $data['_rpc_id'];
-            $_sign = $data['_sign'];
-            if(time() - $_st <= config('hprose.auth.timeout')){
-                $_sign_tmp = md5($_st.$_rpc_id.config('hprose.auth.secret'));
-                if($_sign == $_sign_tmp){
-                    $check = true;
+        if(empty(config('hprose.auth.secret'))){
+            $check = true;
+        }else{
+            if(isset($data['_st']) && isset($data['_rpc_id']) && isset($data['_sign'])){
+                $_st = $data['_st'];
+                $_rpc_id = $data['_rpc_id'];
+                $_sign = $data['_sign'];
+                if(time() - $_st <= config('hprose.auth.timeout')){
+                    $_sign_tmp = md5($_st.$_rpc_id.config('hprose.auth.secret'));
+                    if($_sign == $_sign_tmp){
+                        $check = true;
+                    }
                 }
             }
-        }else{
-            $check = true;
         }
         return $check;
     }
@@ -58,8 +60,10 @@ class AuthHandler{
      * @return mixed
      */
     public function inputInvokeHandler($name, array &$args, \stdClass $context, \Closure $next) {
-        //植入验证参数
-        $args[] = $this->createSign();
+        if(!empty(config('hprose.auth.secret'))){
+            //植入验证参数
+            $args[] = $this->createSign();
+        }
         $response = $next($name, $args, $context);
         return $response;
     }

@@ -11,7 +11,7 @@ return [
      * 鉴权验证
      *      reject_code 验证未通过标识码
      *      reject_msg  验证未通过提示信息
-     *      secret      RPC鉴权密钥
+     *      secret      RPC鉴权密钥         //密钥为空时，不鉴权
      *      timeout     超时限制（秒）
      */
     'auth'  => [
